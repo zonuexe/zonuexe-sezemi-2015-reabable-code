@@ -1,2 +1,4 @@
 #!/usr/bin/env php
-オムライス
+<?php
+
+echo file_get_contents(dirname(__DIR__) . '/data/recipe.txt');
