@@ -4,16 +4,22 @@
 $argv = array_slice($_SERVER['argv'], 1);
 
 list($user_name, $recipe_file, $select_id) = parse_args($argv);
+display_recipe($user_name, $recipe_file, $select_id);
 
-is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
 
-if (isset($user_name)) {
-    echo 'ユーザー名: ', $user_name, PHP_EOL;
-}
 
-foreach (load_recipe($recipe_file) as $id => $recipe) {
-    if ($select_id == 0 || $select_id == $id) {
-      echo "{$id}: {$recipe['name']} {$recipe['url']}" . PHP_EOL;
+function display_recipe($user_name, $recipe_file, $select_id)
+{
+    is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
+
+    if (isset($user_name)) {
+        echo 'ユーザー名: ', $user_name, PHP_EOL;
+    }
+
+    foreach (load_recipe($recipe_file) as $id => $recipe) {
+        if ($select_id == 0 || $select_id == $id) {
+            echo "{$id}: {$recipe['name']} {$recipe['url']}" . PHP_EOL;
+        }
     }
 }
 
