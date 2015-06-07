@@ -1,9 +1,12 @@
 #!/usr/bin/env php
 <?php
-$recipe_file = (isset($_SERVER['argv'][1])) ? $_SERVER['argv'][1] : '';
-$select_id = (isset($_SERVER['argv'][2])) ? $_SERVER['argv'][2] : 0;
+list($user_name, $recipe_file, $select_id) = parse_args($_SERVER['argv']);
 
 is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
+
+if (isset($user_name)) {
+    echo 'ユーザー名: ', $user_name, PHP_EOL;
+}
 
 foreach (load_recipe($recipe_file) as $id => $recipe) {
     if ($select_id == 0 || $select_id == $id) {
@@ -12,8 +15,10 @@ foreach (load_recipe($recipe_file) as $id => $recipe) {
 }
 
 /**
- * @param  string $file レシピファイルのpath
- * @return array  [$id => $name] の配列
+ * ファイルからレシピデータを読み込む
+ *
+ * @param  string  $file レシピファイルのpath
+ * @return array[] [$id => $name] の配列
  */
 function load_recipe($file)
 {
@@ -31,4 +36,27 @@ function load_recipe($file)
     }
 
     return $recipes;
+}
+
+/**
+ * 引数リストを解釈する
+ *
+ * @param  string[] $argv argvリスト。argv[0]は必ず捨てられる。
+ * @return array (string $user_name, string $recipe_file, int $select_id)
+ */
+function parse_args(array $argv)
+{
+    // argv[0]はスクリプト名のため捨てる
+    array_shift($argv);
+    $count = count($argv);
+
+    if ($count === 1) {
+        return [null, $argv[0], 0];
+    } elseif ($count >= 3) {
+        return [$argv[0], $argv[1], (int)$argv[2]];
+    } elseif (is_numeric($argv[1])) {
+        return [null, $argv[0], (int)$argv[1]];
+    }
+
+    return [$argv[0], $argv[1], 0];
 }
