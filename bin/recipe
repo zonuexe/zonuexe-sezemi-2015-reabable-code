@@ -16,6 +16,7 @@ function load_recipe($file)
 {
     $recipes = [];
     $file = new SplFileObject($file);
+    $current_id = 0;
 
     foreach ($file as $index => $line) {
         $name = trim($line);
@@ -23,7 +24,8 @@ function load_recipe($file)
             break;
         }
 
-        $recipes[$index] = $name;
+        $current_id++;
+        $recipes[$current_id] = $name;
     }
 
     return $recipes;
