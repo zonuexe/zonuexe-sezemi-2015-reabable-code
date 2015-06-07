@@ -3,14 +3,15 @@
 
 $argv = array_slice($_SERVER['argv'], 1);
 
-list($user_name, $recipe_file, $select_id) = parse_args($argv);
-display_recipe($user_name, $recipe_file, $select_id);
-
+while (!empty($argv)) {
+    list($user_name, $recipe_file, $select_id, $argv) = parse_args($argv);
+    display_recipe($user_name, $recipe_file, $select_id);
+}
 
 
 function display_recipe($user_name, $recipe_file, $select_id)
 {
-    is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
+    is_file($recipe_file) or die("ファイルないよ: {$recipe_file}".PHP_EOL);
 
     if (isset($user_name)) {
         echo 'ユーザー名: ', $user_name, PHP_EOL;
@@ -21,6 +22,7 @@ function display_recipe($user_name, $recipe_file, $select_id)
             echo "{$id}: {$recipe['name']} {$recipe['url']}" . PHP_EOL;
         }
     }
+    echo PHP_EOL;
 }
 
 /**
@@ -50,20 +52,37 @@ function load_recipe($file)
 /**
  * 引数リストを解釈する
  *
- * @param  string[] $argv argvリスト。argv[0]は必ず捨てられる。
- * @return array (string $user_name, string $recipe_file, int $select_id)
+ *  1. ファイルpathのみが渡されるパターン
+ *      recipe.txt
+ *  2. ユーザー名とファイルpathが渡されるパターン
+ *      tadsan recipe.txt
+ *  3. ファイルpathとIDが渡されるパターン
+ *      recipe.txt 12
+ *  4. ユーザー名とファイルpathとIDが渡されるパターン
+ *      tadsan recipe.txt 16
+ *
+ * @param  string[] $argv
+ * @return array (string $user_name, string $recipe_file, int $select_id, string[] $rest_args)
  */
 function parse_args(array $argv)
 {
-    $count = count($argv);
-
-    if ($count === 1) {
-        return [null, $argv[0], 0];
-    } elseif ($count >= 3) {
-        return [$argv[0], $argv[1], (int)$argv[2]];
-    } elseif (is_numeric($argv[1])) {
-        return [null, $argv[0], (int)$argv[1]];
+    if (isset($argv[1]) && is_numeric($argv[1])) { // 3
+        $user_name   = null;
+        $recipe_file = array_shift($argv);
+        $select_id   = (int)array_shift($argv);
+    } elseif (isset($argv[2]) && is_numeric($argv[2])) { // 4
+        $user_name   = array_shift($argv);
+        $recipe_file = array_shift($argv);
+        $select_id   = (int)array_shift($argv);
+    } elseif ((count($argv) == 1) || is_file($argv[0])) { // 1
+        $user_name   = null;
+        $recipe_file = array_shift($argv);
+        $select_id   = 0;
+    } else { // 2
+        $user_name   = array_shift($argv);
+        $recipe_file = array_shift($argv);
+        $select_id   = 0;
     }
 
-    return [$argv[0], $argv[1], 0];
+    return [$user_name, $recipe_file, $select_id, $argv];
 }
