@@ -1,6 +1,9 @@
 #!/usr/bin/env php
 <?php
-list($user_name, $recipe_file, $select_id) = parse_args($_SERVER['argv']);
+
+$argv = array_slice($_SERVER['argv'], 1);
+
+list($user_name, $recipe_file, $select_id) = parse_args($argv);
 
 is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
 
@@ -46,8 +49,6 @@ function load_recipe($file)
  */
 function parse_args(array $argv)
 {
-    // argv[0]はスクリプト名のため捨てる
-    array_shift($argv);
     $count = count($argv);
 
     if ($count === 1) {
