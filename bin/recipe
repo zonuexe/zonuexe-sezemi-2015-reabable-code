@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
-define('RECIPE_FILE', dirname(__DIR__) . '/data/recipe.txt');
+$recipe_file = (isset($_SERVER['argv'][1])) ? $_SERVER['argv'][1] : '';
 
-foreach (load_recipe(RECIPE_FILE) as $id => $name) {
+is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
+
+foreach (load_recipe($recipe_file) as $id => $name) {
     echo "{$id}: {$name}" . PHP_EOL;
 }
 

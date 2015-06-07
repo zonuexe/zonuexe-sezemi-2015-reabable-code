@@ -5,4 +5,8 @@
 実行方法
 --------
 
-`./bin/recipe` または `php ./bin/recipe`
+### レシピファイルから表示
+
+```
+php ./bin/recipe ./data/recipe.txt
+```
