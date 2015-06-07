@@ -10,3 +10,9 @@
 ```
 php ./bin/recipe ./data/recipe.txt
 ```
+
+### 特定のレシピのみを表示
+
+```
+php ./bin/recipe ./data/recipe.txt 1
+```

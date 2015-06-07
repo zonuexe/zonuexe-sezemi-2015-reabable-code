@@ -1,11 +1,14 @@
 #!/usr/bin/env php
 <?php
 $recipe_file = (isset($_SERVER['argv'][1])) ? $_SERVER['argv'][1] : '';
+$select_id = (isset($_SERVER['argv'][2])) ? $_SERVER['argv'][2] : 0;
 
 is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
 
 foreach (load_recipe($recipe_file) as $id => $name) {
-    echo "{$id}: {$name}" . PHP_EOL;
+    if ($select_id == 0 || $select_id == $id) {
+      echo "{$id}: {$name}" . PHP_EOL;
+    }
 }
 
 /**
