@@ -5,9 +5,9 @@ $select_id = (isset($_SERVER['argv'][2])) ? $_SERVER['argv'][2] : 0;
 
 is_file($recipe_file) or die('ファイルないよ'.PHP_EOL);
 
-foreach (load_recipe($recipe_file) as $id => $name) {
+foreach (load_recipe($recipe_file) as $id => $recipe) {
     if ($select_id == 0 || $select_id == $id) {
-      echo "{$id}: {$name}" . PHP_EOL;
+      echo "{$id}: {$recipe['name']} {$recipe['url']}" . PHP_EOL;
     }
 }
 
@@ -22,13 +22,12 @@ function load_recipe($file)
     $current_id = 0;
 
     foreach ($file as $index => $line) {
-        $name = trim($line);
-        if (strlen($name) < 1) {
-            break;
-        }
+        if (strlen($line) < 1) { break; }
+
+        list($name, $url) = explode(' ', trim($line), 2);
 
         $current_id++;
-        $recipes[$current_id] = $name;
+        $recipes[$current_id] = ['name' => $name, 'url' => $url];
     }
 
     return $recipes;
